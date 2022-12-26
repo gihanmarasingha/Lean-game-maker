@@ -1058,7 +1058,7 @@ class Graph extends React.Component<GraphProps, GraphState> {
         return markdownConverter.makeHtml(gameTexts[this.context][this.props.worlds[node.id].name]);
       }}
       enableNodeDrag={false}
-      enableZoomPanInteraction={false}
+      enableZoomInteraction={false}
       dagMode="td"
       dagLevelDistance={dagLevelDistance}
     />;

@@ -872,6 +872,7 @@ function getGraphData(worlds : Array<WorldData>){
 
   let x : Array<number> = new Array(worlds.length).fill(0);
   let y : Array<number> = new Array(worlds.length).fill(0);
+  let rootnodes = 0
   let worldsWithY = [];
   for(let i = 0; i < worlds.length; i++){
     let p = worlds[i].parents;
@@ -879,6 +880,9 @@ function getGraphData(worlds : Array<WorldData>){
       for(let j = 0; j < p.length; j++){
         y[i] = y[i] > y[p[j]] + 1 ? y[i] : y[p[j]] + 1;
       }
+    }
+    else {
+      rootnodes = rootnodes + 1
     }
     if(worldsWithY.length <= y[i]){
       worldsWithY.push([]);
@@ -928,9 +932,22 @@ function getGraphData(worlds : Array<WorldData>){
     }
   }
 
+  // Shift the x-values to deal with graphs with multiple components.
+  let rootshift = -(rootnodes-1)/2
+  if (worlds.length > 0) {
+    x[0] = rootshift
+  }
+  for (let i = 1; i < worlds.length; i++){
+    if (!worlds[i].parents) {
+      rootshift = rootshift + 1
+    }
+    x[i] = x[i] + rootshift
+  }
+
+
   x = x.map((t) => t * 60);
   y = y.map((t) => t * 80);
-
+  
   return {
     nodes : worlds.map((w, i) => ({id : i, x : x[i], y : y[i], worldData : w})),
     links : [].concat(... worlds.map((w, i) =>{
@@ -1057,8 +1074,8 @@ class Graph extends React.Component<GraphProps, GraphState> {
       nodeLabel={(node) => {
         return markdownConverter.makeHtml(gameTexts[this.context][this.props.worlds[node.id].name]);
       }}
-      enableNodeDrag={false}
-      enableZoomPanInteraction={false}
+      enableNodeDrag={true}
+      enableZoomPanInteraction={true}
       dagMode="td"
       dagLevelDistance={dagLevelDistance}
     />;
@@ -1198,7 +1215,7 @@ class Game extends React.Component<GameProps, GameState> {
     const resetButton = <button className='ridge-button'
       style={{ 
         float: 'right', height:'100%', fontSize: 'large',
-        width: (this.props.languages.length > 1 ? '6%' : '10%')
+        width: (this.props.languages.length > 1 ? '6%' : '15%')
       }}
       onClick={this.props.resetGame} title={"Reset game"}
       dangerouslySetInnerHTML={{__html: "&#8634;"}}></button>;
@@ -1206,7 +1223,7 @@ class Game extends React.Component<GameProps, GameState> {
     const brighnessButton = <button className='ridge-button'
       style={{ 
         float: 'right', height:'100%', fontSize: 'large',
-        width: (this.props.languages.length > 1 ? '6%' : '10%')
+        width: (this.props.languages.length > 1 ? '6%' : '15%')
       }}
       onClick={() => {
         this.props.updateDarkMode(!this.state.darkMode);
@@ -1233,7 +1250,7 @@ class Game extends React.Component<GameProps, GameState> {
         const loadFromFileButton = <button className='ridge-button'
           style={{ 
             float: 'right', height:'100%', fontSize: 'large',
-            width: (props.languages.length > 1 ? '6%' : '10%')
+            width: (props.languages.length > 1 ? '6%' : '15%')
           }}
           onClick={() => {loadFromFileRef.current.click()}} title={"Load game from file"}
           dangerouslySetInnerHTML={{__html: "&#128462;"}}></button>;
@@ -1248,7 +1265,7 @@ class Game extends React.Component<GameProps, GameState> {
       const saveToFileButton = <button className='ridge-button'
         style={{ 
           float: 'right', height:'100%', fontSize: 'large',
-          width: (this.props.languages.length > 1 ? '6%' : '10%')
+          width: (this.props.languages.length > 1 ? '6%' : '15%')
         }}
         onClick={this.props.saveGameToFile} title={"Save game to file"}
         dangerouslySetInnerHTML={{__html: "&#128427;"}}></button>;
@@ -1270,17 +1287,17 @@ class Game extends React.Component<GameProps, GameState> {
 
       const graphDiv = <Graph graphData={this.graphData} worlds={this.props.worlds} world={this.state.world} 
                             solvedWorlds={this.state.solvedWorlds} gotoWorld={this.gotoWorld.bind(this)} 
-                            width={window.innerWidth*0.4} height={window.innerHeight} darkMode={this.state.darkMode}/>;
+                            width={window.innerWidth*0.6} height={window.innerHeight} darkMode={this.state.darkMode}/>;
 
       return (
         <CurrentLanguageIndexContext.Provider value={this.state.currentLanguageIndex}>
         <div style={{ position: 'fixed', top: '0', bottom: '0', left: '0', right: '0'}}>
           <Container style={{ height: '100%' }}>
-          <Section defaultSize={window.innerWidth*0.6}>
+          <Section defaultSize={window.innerWidth*0.4}>
             {content}
           </Section>
-          <Bar size={5} hidden={true}/>
-          <Section defaultSize={window.innerWidth*0.4}>
+          <Bar size={5} style={{ cursor: 'col-resize' }} />
+          <Section defaultSize={window.innerWidth*0.6}>
             <div style={{
               width: '100%', height: '100%', boxSizing: 'border-box',
               borderStyle: 'double'}}>

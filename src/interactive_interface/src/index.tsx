@@ -1297,7 +1297,7 @@ class Game extends React.Component<GameProps, GameState> {
           <Section defaultSize={window.innerWidth*0.4}>
             {content}
           </Section>
-          <Bar size={5} style={{ cursor: 'col-resize' }} />
+          <Bar size={5} hidden={true} />
           <Section defaultSize={window.innerWidth*0.6}>
             <div style={{
               width: '100%', height: '100%', boxSizing: 'border-box',

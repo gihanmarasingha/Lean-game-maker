@@ -881,8 +881,9 @@ function getGraphData(worlds : Array<WorldData>){
         y[i] = y[i] > y[p[j]] + 1 ? y[i] : y[p[j]] + 1;
       }
     }
-    else {
+    else { // A new root notes
       rootnodes = rootnodes + 1
+      worldsWithY = [];
     }
     if(worldsWithY.length <= y[i]){
       worldsWithY.push([]);

@@ -881,7 +881,7 @@ function getGraphData(worlds : Array<WorldData>){
         y[i] = y[i] > y[p[j]] + 1 ? y[i] : y[p[j]] + 1;
       }
     }
-    else { // A new root notes
+    else { // A new root node
       rootnodes = rootnodes + 1
       worldsWithY = [];
     }
@@ -1037,7 +1037,7 @@ class Graph extends React.Component<GraphProps, GraphState> {
   componentDidMount(){
     let collideValue = 30 * this.scale;
     let linkDistance = 50 * this.scale;
-    let chargeStrength = -40 * this.scale;
+   // let chargeStrength = -40 * this.scale;
 
     const fg = this.graphRef.current;
     if(this.props.world != -1){
@@ -1047,7 +1047,7 @@ class Graph extends React.Component<GraphProps, GraphState> {
     }else{
       fg.d3Force('collide', d3.forceCollide(collideValue));
       fg.d3Force("link", d3.forceLink().id(function (d) { return d.id; }).distance(linkDistance).strength(1));
-      fg.d3Force("charge", d3.forceManyBody().strength(chargeStrength));
+      fg.d3Force("charge", null);
     }
   }
 

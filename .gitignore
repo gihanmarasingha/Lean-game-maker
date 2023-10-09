@@ -5,4 +5,3 @@
 **/*.olean
 **/.vscode
 src/interactive_interface/lean_server/*
-src/interactive_interface/package-lock.json

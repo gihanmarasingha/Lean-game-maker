@@ -4,4 +4,5 @@
 **/Lean_game_maker.egg-info
 **/*.olean
 **/.vscode
+.venv/
 src/interactive_interface/lean_server/*
